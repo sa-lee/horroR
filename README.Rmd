@@ -1,0 +1,82 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(polite)
+library(rvest)
+library(tidyverse)
+library(rlang)
+library(googlesheets4)
+```
+
+# horroR - scraping imdb top 250 horror films
+
+For fun and organisation scrape some horror films using functional R.
+
+### the functions
+
+Creates a function factory to pull out different css selectors on the page.
+```{r funs}
+scrape_factory <- function(css) {
+  force(css)
+  function(p) {
+    p %>% 
+      html_nodes(css) %>% 
+      html_text() %>% 
+      str_trim() 
+  }
+}
+
+# css selectors as a list of functions
+selectors <- list(
+  ranking = ".text-primary",
+  title = ".lister-item-content .col-title a",
+  year = ".text-muted",
+  imdb_rating = ".col-imdb-rating"
+) %>% 
+  map(scrape_factory)
+
+# this will get the first 250 films starting from the base URL
+pagination <- function(base_url, start = seq(1, 201, by = 50)) {
+  ifelse(start == 1, 
+         base_url,
+         paste0(base_url, ",desc&start=", start, "&ref_=adv_nxt")
+  )
+} 
+```
+
+
+### do the work
+```{r scrape}
+base_url <- "https://www.imdb.com/search/title/?title_type=feature&num_votes=25000,&genres=horror&sort=user_rating,desc&view=simple&sort=user_rating"
+
+page <- map(pagination(base_url), ~scrape(bow(.)))
+
+# for each page call the selector functions and collapse to a table
+# then row bind the results and tidy some of the columns 
+top250_horror <- map_dfr(page, ~map_dfc(selectors, exec, .)) %>% 
+  mutate(
+    ranking = as.integer(ranking),
+    imdb_rating = as.numeric(imdb_rating),
+    has_casey_seen_it = NA # the most prolific watcher will curate this column
+  )
+
+top250_horror
+```
+
+### upload to google sheets
+
+```{r, eval= FALSE}
+gs_sheet_url <- "your-sheet-url"
+
+sheet <- gs4_get(gs_sheet_url)
+
+sheet_write(top250_horror, sheet, sheet = "imdb-top")
+```
