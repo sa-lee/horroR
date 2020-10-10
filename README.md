@@ -4,6 +4,37 @@
 # horroR - scraping imdb top 250 horror films
 
 For fun and organisation scrape some horror films using functional R.
+Note not all of the films in the list I would personally classify as
+horror.
+
+``` r
+library(polite)
+library(rvest)
+#> Loading required package: xml2
+library(tidyverse)
+#> ── Attaching packages ───────── tidyverse 1.3.0 ──
+#> ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+#> ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+#> ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+#> ✓ readr   1.3.1     ✓ forcats 0.5.0
+#> ── Conflicts ──────────── tidyverse_conflicts() ──
+#> x dplyr::filter()         masks stats::filter()
+#> x readr::guess_encoding() masks rvest::guess_encoding()
+#> x dplyr::lag()            masks stats::lag()
+#> x purrr::pluck()          masks rvest::pluck()
+library(rlang)
+#> 
+#> Attaching package: 'rlang'
+#> The following objects are masked from 'package:purrr':
+#> 
+#>     %@%, as_function, flatten, flatten_chr, flatten_dbl, flatten_int,
+#>     flatten_lgl, flatten_raw, invoke, list_along, modify, prepend,
+#>     splice
+#> The following object is masked from 'package:xml2':
+#> 
+#>     as_list
+library(googlesheets4)
+```
 
 ### the functions
 

@@ -9,6 +9,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+```
+
+# horroR - scraping imdb top 250 horror films
+
+For fun and organisation scrape some horror films using functional R. Note not all of the films in the list I would personally classify as horror.
+
+```{r}
 library(polite)
 library(rvest)
 library(tidyverse)
@@ -16,9 +23,6 @@ library(rlang)
 library(googlesheets4)
 ```
 
-# horroR - scraping imdb top 250 horror films
-
-For fun and organisation scrape some horror films using functional R.
 
 ### the functions
 
